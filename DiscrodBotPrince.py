@@ -12,7 +12,10 @@ import os
 from discord import Embed
 import sqlite3
 import time
+from dotenv import load_dotenv
 
+load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -585,8 +588,8 @@ import asyncio
 create_db()
 async def main():
     await bot.load_extension("cogs.AdminLog")
-    await bot.start("")
 
+bot.run(TOKEN)
 asyncio.run(main())
 
 
