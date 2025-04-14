@@ -307,6 +307,7 @@ async def additem(ctx, item_name: str, price: int, stock: int):
     await ctx.send(f"✅ Товар **{item_name}** добавлен в магазин за {price} монет, количество: {stock} шт.")
 
 @bot.command()
+@commands.has_permissions(administrator=True)
 async def removeitem(ctx, item_name: str):
     """Удаляет товар из магазина по имени."""
     
