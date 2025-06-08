@@ -13,7 +13,7 @@ REPEAT_MESSAGE_THRESHOLD = 3  # сколько одинаковых сообще
 
 banned_words = ["negr", "niger", "pidor", "hohol", "zhid", "dayn", "pidoras", "gomik", "pedik", "gomosek", "simp", "incel"]
 mute_durations = [0, 180, 540, 900]
-LOG_CHANNEL_NAME = "лог-наказаний"
+LOG_CHANNEL_NAME = "логи-бота"
 
 user_message_times = defaultdict(list)
 user_warnings = defaultdict(int)
@@ -27,13 +27,13 @@ async def log_action(guild, user, reason):
         return
 
     embed = discord.Embed(
-        title="🚨 Нарушение",
-        description=f"**Пользователь:** {user.mention}\n**Причина:** {reason}",
+        title="🚨 Порушення",
+        description=f"**Користувач:** {user.mention}\n**Причина:** {reason}",
         color=discord.Color.red(),
         timestamp=discord.utils.utcnow()
     )
     embed.set_thumbnail(url=user.display_avatar.url)
-    embed.set_footer(text=f"ID пользователя: {user.id}")
+    embed.set_footer(text=f"ID користувача: {user.id}")
     await log_channel.send(embed=embed)
 
 async def mute_user(guild, member, duration, reason):
@@ -48,7 +48,7 @@ async def mute_user(guild, member, duration, reason):
         await log_action(guild, member, f"{reason} — мут {duration // 60} мин.")
         await asyncio.sleep(duration)
         await member.remove_roles(mute_role)
-        await log_action(guild, member, f"Размут после {reason}")
+        await log_action(guild, member, f"Розмут після {reason}")
 
 # === Проверка ===
 
@@ -80,10 +80,10 @@ async def handle_antispam(message):
     if len(user_message_times[user_id]) > MAX_MESSAGES:
         await message.delete()
         user_warnings[user_id] += 1
-        await log_action(message.guild, message.author, "Флуд сообщениями")
+        await log_action(message.guild, message.author, "Флуд повідомленнями")
         duration = mute_durations[min(user_warnings[user_id], len(mute_durations)-1)]
         if duration > 0:
-            await mute_user(message.guild, message.author, duration, "Флуд сообщениями")
+            await mute_user(message.guild, message.author, duration, "Флуд повідомленнями")
         return
 
     # === Флуд одинаковыми сообщениями ===
@@ -95,17 +95,17 @@ async def handle_antispam(message):
     if is_flooding(user_last_messages[user_id]):
         await message.delete()
         user_warnings[user_id] += 1
-        await log_action(message.guild, message.author, "Флуд одинаковыми сообщениями")
+        await log_action(message.guild, message.author, "Флуд однаковими повідомленнями")
         duration = mute_durations[min(user_warnings[user_id], len(mute_durations)-1)]
         if duration > 0:
-            await mute_user(message.guild, message.author, duration, "Флуд одинаковыми сообщениями")
+            await mute_user(message.guild, message.author, duration, "Флуд однаковими повідомленнями")
         return
 
     # === КАПС ===
     if is_capslock(content) and len(content) > 10:
         await message.delete()
         user_warnings[user_id] += 1
-        await log_action(message.guild, message.author, "Сообщение с капсом")
+        await log_action(message.guild, message.author, "Повідомлення з капсом")
         duration = mute_durations[min(user_warnings[user_id], len(mute_durations)-1)]
         if duration > 0:
             await mute_user(message.guild, message.author, duration, "Капс")
@@ -117,7 +117,7 @@ async def handle_antispam(message):
         if re.search(rf"\b{re.escape(word)}\b", lower):
             await message.delete()
             user_warnings[user_id] += 1
-            reason = f"Запрещённое слово: `{word}`"
+            reason = f"Заборонене слово: `{word}`"
             await log_action(message.guild, message.author, reason)
             duration = mute_durations[min(user_warnings[user_id], len(mute_durations)-1)]
             if duration > 0:
