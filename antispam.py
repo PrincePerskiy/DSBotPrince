@@ -19,7 +19,7 @@ user_message_times = defaultdict(list)
 user_warnings = defaultdict(int)
 user_last_messages = defaultdict(list)
 
-# === Вспомогательные функции ===
+
 
 async def log_action(guild, user, reason):
     log_channel = discord.utils.get(guild.text_channels, name=LOG_CHANNEL_NAME)
@@ -50,7 +50,7 @@ async def mute_user(guild, member, duration, reason):
         await member.remove_roles(mute_role)
         await log_action(guild, member, f"Розмут після {reason}")
 
-# === Проверка ===
+#  Проверка 
 
 def is_capslock(message: str):
     letters = [c for c in message if c.isalpha()]
@@ -64,7 +64,6 @@ def is_flooding(message_list):
         return False
     return all(msg == message_list[0] for msg in message_list)
 
-# === Главная функция ===
 
 async def handle_antispam(message):
     if message.author.bot:
@@ -73,7 +72,7 @@ async def handle_antispam(message):
     user_id = message.author.id
     now = time.time()
 
-    # === Флуд по частоте сообщений ===
+    #  Флуд по частоте сообщений 
     user_message_times[user_id].append(now)
     user_message_times[user_id] = [t for t in user_message_times[user_id] if now - t < TIME_WINDOW]
 
@@ -86,7 +85,7 @@ async def handle_antispam(message):
             await mute_user(message.guild, message.author, duration, "Флуд повідомленнями")
         return
 
-    # === Флуд одинаковыми сообщениями ===
+    #  Флуд одинаковыми сообщениями 
     content = message.content.strip()
     user_last_messages[user_id].append(content)
     if len(user_last_messages[user_id]) > REPEAT_MESSAGE_THRESHOLD:
@@ -101,7 +100,7 @@ async def handle_antispam(message):
             await mute_user(message.guild, message.author, duration, "Флуд однаковими повідомленнями")
         return
 
-    # === КАПС ===
+    #  КАПС 
     if is_capslock(content) and len(content) > 10:
         await message.delete()
         user_warnings[user_id] += 1
@@ -111,7 +110,7 @@ async def handle_antispam(message):
             await mute_user(message.guild, message.author, duration, "Капс")
         return
 
-    # === Запрещённые слова ===
+    # Запрещённые слова 
     lower = content.lower()
     for word in banned_words:
         if re.search(rf"\b{re.escape(word)}\b", lower):

@@ -4,7 +4,7 @@ from economy import Economy
 class Shop:
     def __init__(self, db_path="economy.db"):
         self.db_path = db_path
-        self.economy = Economy()  # Создает один экземпляр Economy
+        self.economy = Economy()  
 
     async def initialize(self):
         async with aiosqlite.connect(self.db_path) as db:
@@ -58,7 +58,7 @@ class Shop:
 
                 # Обновляет баланс пользователя и количество товара в магазине
                 await self.economy.update_balance(user_id, -price)
-                await self.update_stock(item_name, stock - 1)  # Уменьшаем количество товара на 1
+                await self.update_stock(item_name, stock - 1)  
 
                 return True, price
 

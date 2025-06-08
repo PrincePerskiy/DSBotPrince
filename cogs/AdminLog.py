@@ -4,7 +4,7 @@ from discord.ext import commands
 class AdminLog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.log_channel_id = 1359876929909428314  # Замените на ваш ID лог-канала
+        self.log_channel_id = 1359876929909428314 
 
     # Очистка сообщений
     @commands.command()

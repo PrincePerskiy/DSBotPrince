@@ -39,19 +39,19 @@ async def stats(ctx, member: discord.Member = None):
     member = member or ctx.author
     user_id = member.id
 
-    # Получаем XP и уровень
+    # Получает XP и уровень
     xp, level = get_user_data(user_id)
     xp_needed = level * 100
     progress = create_progress_bar(xp, xp_needed)
 
-    # Получаем баланс из экономики
+    # Получает баланс из экономики
     balance = await economy.get_balance(user_id)
 
     # Роли (без @everyone)
     roles = [role.name for role in member.roles if role.name != "@everyone"]
     roles_display = ", ".join(roles) if roles else "Ні"
 
-    # Создаём embed
+    # Создаёт embed
     embed = discord.Embed(
         title=f"📊 Статистика користувача {member.display_name}",
         color=discord.Color.blue()
@@ -241,7 +241,7 @@ async def shop(ctx):
     if not items:
         await ctx.send("Магазин пустий!")
     else:
-        # Создаём embed
+        # Создаёт embed
         embed = discord.Embed(
             title="Магазин товарів🏪",
             description="Ось що доступно в нашому магазині🏷:",
@@ -260,7 +260,7 @@ async def shop(ctx):
                 inline=False
             )
 
-        # Загружаем изображение как файл
+
         file = discord.File("lavka_shop.png", filename="lavka_shop.png")
         embed.set_image(url="attachment://lavka_shop.png")
 
@@ -312,7 +312,7 @@ async def additem(ctx, item_name: str, price: int, stock: int):
 async def removeitem(ctx, item_name: str):
     """Удаляет товар из магазина по имени."""
     
-    # Пытаемся удалить товар
+    # удалить товар
     success = await shop_system.remove_item(item_name)
     
     if success:
@@ -368,7 +368,7 @@ async def guess(ctx, bet: int, guess: int):
     )
     embed.set_footer(
         text=f"Гравець: {ctx.author.display_name}",
-        icon_url=ctx.author.display_avatar.url  # заменил на display_avatar для совместимости
+        icon_url=ctx.author.display_avatar.url  
     )
 
     await ctx.send(embed=embed)
@@ -485,11 +485,11 @@ def get_user_data(user_id):
     conn.close()
     return data
 
-# ➕ Обновить XP и уровень
+# Обновить XP и уровень
 def update_xp(user_id, xp_gain):
     xp, level = get_user_data(user_id)
     xp += xp_gain
-    current_xp_needed = level * 100  # ✅ сохраняем XP, нужный для текущего уровня
+    current_xp_needed = level * 100  # сохраняет XP, нужный для текущего уровня
     xp_needed = current_xp_needed
     leveled_up = False
     while xp >= xp_needed:
@@ -532,7 +532,7 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-# 📈 Команда: !lvl
+# Команда: !lvl
 @bot.command(name='lvl')
 async def lvl(ctx, member: discord.Member = None):
     member = member or ctx.author
@@ -587,7 +587,7 @@ async def set_level_error(ctx, error):
 
 import unittest
 from discord.ext import commands
-from DSBotPrince import bot  # Импортируй своего бота
+from DSBotPrince import bot 
 
 class BotTest(unittest.TestCase):
     def test_prefix(self):
